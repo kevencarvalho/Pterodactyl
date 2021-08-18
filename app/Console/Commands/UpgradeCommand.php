@@ -94,6 +94,11 @@ class UpgradeCommand extends Command
         $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
         $bar->start();
 
+        $this->withProgress($bar, function () {
+            $this->line('$upgrader> php artisan down');
+            $this->call('down');
+        });
+
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
                 $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" | tar -xzv");
@@ -103,11 +108,6 @@ class UpgradeCommand extends Command
                 });
             });
         }
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan down');
-            $this->call('down');
-        });
 
         $this->withProgress($bar, function () {
             $this->line('$upgrader> chmod -R 755 storage bootstrap/cache');
